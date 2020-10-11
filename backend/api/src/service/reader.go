@@ -1,8 +1,9 @@
 package service
 
 import (
-	"ufc.com/dad/src/config"
 	"ufc.com/dad/src/model"
+	"ufc.com/dad/src/security"
+	"ufc.com/dad/src/utils"
 )
 
 // Readers - Readers
@@ -12,7 +13,7 @@ type Readers []model.Reader
 func GetAllReaders() Readers {
 
 	var readers Readers
-	db, _ := config.NewConnection()
+	db, _ := utils.NewConnection()
 	db.Find(&readers)
 
 	return readers
@@ -21,7 +22,7 @@ func GetAllReaders() Readers {
 // GetOneReader - Get one specific reader
 func GetOneReader(id int) (*model.Reader, error) {
 
-	db, _ := config.NewConnection()
+	db, _ := utils.NewConnection()
 	var reader model.Reader
 	err := db.Where("id = ?", id).Find(&reader).Error
 	if err != nil {
@@ -34,8 +35,8 @@ func GetOneReader(id int) (*model.Reader, error) {
 // StoreReader - Store a reader
 func StoreReader(reader model.Reader) *model.Reader {
 
-	db, _ := config.NewConnection()
-	reader.Password, _ = config.HashPassword(reader.Password)
+	db, _ := utils.NewConnection()
+	reader.Password, _ = security.HashPassword(reader.Password)
 	db.Create(&reader)
 	return &reader
 
@@ -44,7 +45,7 @@ func StoreReader(reader model.Reader) *model.Reader {
 // DeleteReader - Delete a reader
 func DeleteReader(id int) error {
 
-	db, _ := config.NewConnection()
+	db, _ := utils.NewConnection()
 	var reader model.Reader
 	err := db.Where("id = ?", id).Find(&reader).Error
 	db.Delete(&reader)
