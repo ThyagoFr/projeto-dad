@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"ufc.com/dad/src/model"
 	"ufc.com/dad/src/security"
 	"ufc.com/dad/src/utils"
@@ -9,14 +11,31 @@ import (
 // Readers - Readers
 type Readers []model.Reader
 
+// Login - Login
+func Login(email string, pass string) (string, error) {
+
+	db, _ := utils.NewConnection()
+	var reader model.Reader
+	err := db.Where("email = ?", email).Find(&reader).Error
+	if err != nil {
+		return "", err
+	}
+	match := security.CheckPasswordHash(pass, reader.Password)
+	if match {
+		return security.GenerateToken(reader.ID)
+	}
+	return "", errors.New("Check your credentials")
+
+}
+
 // GetAllReaders - Get all readers
 func GetAllReaders() Readers {
 
 	var readers Readers
 	db, _ := utils.NewConnection()
 	db.Find(&readers)
-
 	return readers
+
 }
 
 // GetOneReader - Get one specific reader

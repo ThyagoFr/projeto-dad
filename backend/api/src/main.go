@@ -5,9 +5,19 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
+
 	"github.com/rs/cors"
 	"ufc.com/dad/src/migration"
 )
+
+func init() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
+}
 
 func main() {
 	mux := NewRouter()
