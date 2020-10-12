@@ -39,7 +39,7 @@ func extractToken(header http.Header) error {
 	token := strings.Split(authorization[0], " ")[1]
 	tkn, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		jwtKey, _ := os.LookupEnv("JWT_KEY")
-		return jwtKey, nil
+		return []byte(jwtKey), nil
 	})
 	return validateToken(tkn, err)
 
@@ -69,7 +69,7 @@ func GenerateToken(userID uint) (string, error) {
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userID
 	atClaims["expiration_time"] = time.Now().Add(time.Hour * 8).Unix()
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	at := jwt.NewWithClaims(jwt.SigningMethodRS256, atClaims)
 	token, err := at.SignedString([]byte(key))
 	if err != nil {
 		return "An error ocurred", err

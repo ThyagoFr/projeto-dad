@@ -12,7 +12,7 @@ import (
 type Readers []model.Reader
 
 // Login - Login
-func Login(email string, pass string) (string, error) {
+func Login(email, pass string) (string, error) {
 
 	db, _ := utils.NewConnection()
 	var reader model.Reader
@@ -43,7 +43,13 @@ func GetOneReader(id int) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	var reader model.Reader
-	err := db.Where("id = ?", id).Find(&reader).Error
+	err := db.
+		Select([]string{
+			"id",
+			"name",
+			"age",
+			"email"}).
+		Where("id = ?", id).Find(&reader).Error
 	if err != nil {
 		return nil, err
 	}

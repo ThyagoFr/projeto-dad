@@ -1,31 +1,32 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
+
+	"ufc.com/dad/src/utils"
 
 	"github.com/joho/godotenv"
-
-	"github.com/rs/cors"
-	"ufc.com/dad/src/migration"
 )
 
 func init() {
 
 	if err := godotenv.Load(); err != nil {
+		log.Println(err)
 		log.Println("No .env file found")
 	}
 
 }
 
 func main() {
-	mux := NewRouter()
-	c := cors.New(cors.Options{
-		AllowedMethods: []string{"POST", "GET", "DELETE", "PUT", "PATCH"},
-	})
-	handler := c.Handler(mux)
-	fmt.Println("Server running on 8080 port ... ")
-	migration.Migrate()
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	/*
+		mux := controller.NewRouter()
+		c := cors.New(cors.Options{
+			AllowedMethods: []string{"POST", "GET", "DELETE", "PUT", "PATCH"},
+		})
+		handler := c.Handler(mux)
+		log.Println("Server running on 8080 port ... ")
+		migration.Migrate()
+		log.Fatal(http.ListenAndServe(":8080", handler))
+	*/
+	utils.UploadToS3("1380713", "8317317")
 }
