@@ -16,7 +16,7 @@ var (
 	s3session *s3.S3
 )
 
-func createSession() {
+func createS3Session() {
 
 	awsRegion := os.Getenv("AWS_REGION")
 
@@ -62,7 +62,7 @@ func createBucket() (err error) {
 // UploadToS3 - Upload image to S3
 func UploadToS3(key, filename string) (string, error) {
 
-	createSession()
+	createS3Session()
 	filename = "teste.png"
 	f, err := os.Open(filename)
 	if err != nil {

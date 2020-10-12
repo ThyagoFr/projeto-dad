@@ -28,5 +28,12 @@ func main() {
 		migration.Migrate()
 		log.Fatal(http.ListenAndServe(":8080", handler))
 	*/
-	utils.UploadToS3("1380713", "8317317")
+	// utils.UploadToS3("1380713", "8317317")
+	message := utils.Message{
+		Name:  "Thyago",
+		To:    "thyagofr@alu.ufc.br",
+		Token: "837ygbjdouhsdn",
+	}
+	err := utils.SendMessage(message)
+	log.Println(err)
 }
