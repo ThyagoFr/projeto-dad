@@ -60,26 +60,23 @@ func createBucket() (err error) {
 }
 
 // UploadToS3 - Upload image to S3
-func UploadToS3(key, filename string) (string, error) {
+func UploadToS3(key string, file *os.File) (string, error) {
 
 	createS3Session()
-	filename = "teste.png"
-	f, err := os.Open(filename)
-	if err != nil {
-		log.Println("failed to open file")
-		return "", err
-	}
 
 	awsBucket := os.Getenv("AWS_BUCKET_NAME")
 
 	_, errF := s3session.PutObject(
 		&s3.PutObjectInput{
-			Body:   f,
+			Body:   file,
 			Bucket: aws.String(awsBucket),
 			Key:    aws.String(key),
 			ACL:    aws.String(s3.BucketCannedACLPublicRead),
 		},
 	)
+	if errF != nil {
+		log.Fatal(errF)
+	}
 	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + key
 	return resource, errF
 
