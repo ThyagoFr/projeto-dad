@@ -100,6 +100,8 @@ func LoadInitalData() {
 				Author:  author,
 				Summary: summary,
 			}
+
+			os.Remove("tmp.jpg")
 			db.Create(&book)
 		}
 
