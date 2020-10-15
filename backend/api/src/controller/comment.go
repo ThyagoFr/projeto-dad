@@ -1,0 +1,52 @@
+package controller
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
+	h "ufc.com/dad/src/handler"
+	"ufc.com/dad/src/model"
+	s "ufc.com/dad/src/service"
+)
+
+// Comments - Comments
+type Comments []model.Comment
+
+// GetAllComments - Get all comments
+func GetAllComments(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	att := mux.Vars(r)
+	idAtt := att["id"]
+	id, _ := strconv.Atoi(idAtt)
+	comments := s.GetAllComments(uint(id))
+	if err := json.NewEncoder(w).Encode(&comments); err != nil {
+		h.Handler(w, r, http.StatusInternalServerError, err.Error())
+	}
+
+}
+
+// StoreComment - Store a comment
+func StoreComment(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	var comment model.Comment
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	if err := decoder.Decode(&comment); err != nil {
+		h.Handler(w, r, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	att := mux.Vars(r)
+	idAtt := att["id"]
+	id, _ := strconv.Atoi(idAtt)
+
+	s.StoreComment(uint(id), comment)
+	w.WriteHeader(http.StatusCreated)
+
+}
