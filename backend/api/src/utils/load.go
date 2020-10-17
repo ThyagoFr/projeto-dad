@@ -2,11 +2,9 @@ package utils
 
 import (
 	"encoding/json"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"ufc.com/dad/src/model"
 )
@@ -63,23 +61,23 @@ func LoadInitalData() {
 			title := element.VolumeInfo.Title
 			cover := element.VolumeInfo.ImageLinks.SmallThumbnail
 
-			file, err := os.Create("tmp.jpg")
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer file.Close()
+			/* 			file, err := os.Create("tmp.jpg")
+			   			if err != nil {
+			   				log.Fatal(err)
+			   			}
+			   			defer file.Close()
 
-			response, err := http.Get(cover)
+			   			response, err := http.Get(cover)
 
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer response.Body.Close()
+			   			if err != nil {
+			   				log.Fatal(err)
+			   			}
+			   			defer response.Body.Close()
 
-			_, err = io.Copy(file, response.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
+			   			_, err = io.Copy(file, response.Body)
+			   			if err != nil {
+			   				log.Fatal(err)
+			   			} */
 
 			genre := "Desconhecido"
 			author := "Desconhecido"
@@ -92,16 +90,16 @@ func LoadInitalData() {
 			}
 
 			summary := element.VolumeInfo.Description
-			url, _ := UploadToS3(element.VolumeInfo.IndustryIdentifiers[0].Identifier, file)
+			// url, _ := UploadToS3(element.VolumeInfo.IndustryIdentifiers[0].Identifier, file)
 			book := model.Book{
 				Title:   title,
-				Cover:   url,
+				Cover:   cover,
 				Genre:   genre,
 				Author:  author,
 				Summary: summary,
 			}
 
-			os.Remove("tmp.jpg")
+			// os.Remove("tmp.jpg")
 			db.Create(&book)
 		}
 

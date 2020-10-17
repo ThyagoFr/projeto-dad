@@ -11,18 +11,15 @@ import (
 	s "ufc.com/dad/src/service"
 )
 
-// Comments - Comments
-type Comments []model.Comment
-
-// GetAllComments - Get all comments
-func GetAllComments(w http.ResponseWriter, r *http.Request) {
+// GetBookComments - Get all comments of a book
+func GetBookComments(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	att := mux.Vars(r)
 	idAtt := att["id"]
 	id, _ := strconv.Atoi(idAtt)
-	comments := s.GetAllComments(uint(id))
+	comments := s.GetComments(uint(id))
 	if err := json.NewEncoder(w).Encode(&comments); err != nil {
 		h.Handler(w, r, http.StatusInternalServerError, err.Error())
 	}
@@ -41,12 +38,7 @@ func StoreComment(w http.ResponseWriter, r *http.Request) {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	att := mux.Vars(r)
-	idAtt := att["id"]
-	id, _ := strconv.Atoi(idAtt)
-
-	s.StoreComment(uint(id), comment)
+	s.StoreComment(comment)
 	w.WriteHeader(http.StatusCreated)
 
 }

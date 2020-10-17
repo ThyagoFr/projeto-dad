@@ -10,3 +10,6 @@ type Interest struct {
 	BookID   uint
 	ReaderID uint
 }
+
+// Interests - Interests
+type Interests []Interest

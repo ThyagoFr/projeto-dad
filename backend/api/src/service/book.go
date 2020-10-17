@@ -5,16 +5,30 @@ import (
 	"ufc.com/dad/src/utils"
 )
 
-// Books - Books
-type Books []model.Book
+// BookInfo - BookInfo
+type BookInfo struct {
+	ID      int
+	Title   string
+	Cover   string
+	Genre   string
+	Author  string
+	Summary string
+	Average float64
+	Qtd     int
+}
 
 // GetAllBooks - Get all books
-func GetAllBooks() Books {
+func GetAllBooks() []BookInfo {
 
-	var books Books
+	var result []BookInfo
 	db, _ := utils.NewConnection()
-	db.Find(&books)
-	return books
+	db.Raw(`select id, title, cover, genre,	author , summary, average, qtd 
+			from
+			books b
+			left join
+			( select book_id, sum(rate)/count(book_id) as average, count(book_id) as qtd from comments c group by book_id) c
+			on c.book_id = b.id`).Scan(&result)
+	return result
 
 }
 
@@ -27,7 +41,6 @@ func GetOneBook(id uint) (*model.Book, error) {
 	if err != nil {
 		return nil, err
 	}
-	book.Comments = GetAllComments(book.ID)
 	return &book, nil
 
 }

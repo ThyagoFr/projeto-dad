@@ -14,3 +14,6 @@ type Book struct {
 	Summary  string
 	Comments []Comment
 }
+
+// Books - Books
+type Books []Book

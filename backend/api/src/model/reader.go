@@ -14,3 +14,6 @@ type Reader struct {
 	Password  string
 	Interests []Interest
 }
+
+// Readers - Readers
+type Readers []Reader

@@ -39,17 +39,11 @@ func GetAllReaders() Readers {
 }
 
 // GetOneReader - Get one specific reader
-func GetOneReader(id int) (*model.Reader, error) {
+func GetOneReader(id uint) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	var reader model.Reader
-	err := db.
-		Select([]string{
-			"id",
-			"name",
-			"age",
-			"email"}).
-		Where("id = ?", id).Find(&reader).Error
+	err := db.Find(&reader).Error
 	if err != nil {
 		return nil, err
 	}

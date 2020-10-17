@@ -29,7 +29,7 @@ func GetOneReader(w http.ResponseWriter, r *http.Request) {
 	att := mux.Vars(r)
 	idAtt := att["id"]
 	id, _ := strconv.Atoi(idAtt)
-	reader, err := s.GetOneReader(id)
+	reader, err := s.GetOneReader(uint(id))
 	if err != nil {
 		h.Handler(w, r, http.StatusNotFound, err.Error())
 		return

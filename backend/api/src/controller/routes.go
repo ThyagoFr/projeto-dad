@@ -12,14 +12,13 @@ func NewRouter() *mux.Router {
 	open := router.PathPrefix("/api").Subrouter()
 	open.HandleFunc("/login", Login).Methods("POST")
 	open.HandleFunc("/register", StoreReader).Methods("POST")
+	open.HandleFunc("/books", GetBooks).Methods("GET")
 	protected := router.PathPrefix("/api/v1").Subrouter()
 	protected.HandleFunc("/readers", GetAllReaders).Methods("GET")
 	protected.HandleFunc("/readers/{id}", GetOneReader).Methods("GET")
 	protected.HandleFunc("/readers/{id}", DeleteReader).Methods("DELETE")
-	protected.HandleFunc("/books", GetAllBooks).Methods("GET")
-	protected.HandleFunc("/books/{id}", GetOneBook).Methods("GET")
-	protected.HandleFunc("/comments", StoreComment).Methods("GET")
-	protected.HandleFunc("/comments", GetAllComments).Methods("POST")
+	protected.HandleFunc("/comments/{id}", GetBookComments).Methods("GET")
+	protected.HandleFunc("/comments/{id}", StoreComment).Methods("POST")
 	protected.Use(security.JWTMiddleware)
 	return router
 

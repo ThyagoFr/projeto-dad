@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
+	"net/http"
 
-	"ufc.com/dad/src/utils"
+	"ufc.com/dad/src/controller"
+	"ufc.com/dad/src/migration"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 func init() {
@@ -18,23 +21,14 @@ func init() {
 }
 
 func main() {
-	/*
-		mux := controller.NewRouter()
-		c := cors.New(cors.Options{
-			AllowedMethods: []string{"POST", "GET", "DELETE", "PUT", "PATCH"},
-		})
-		handler := c.Handler(mux)
-		log.Println("Server running on 8080 port ... ")
-		migration.Migrate()
-		log.Fatal(http.ListenAndServe(":8080", handler))
-	*/
-	// utils.UploadToS3("1380713", "8317317")
-	/* 	message := utils.Message{
-	   		Name:  "Thyago",
-	   		To:    "thyagofr@alu.ufc.br",
-	   		Token: "837ygbjdouhsdn",
-	   	}
-	   	err := utils.SendMessage(message)
-	   	log.Println(err) */
-	utils.LoadInitalData()
+
+	mux := controller.NewRouter()
+	c := cors.New(cors.Options{
+		AllowedMethods: []string{"POST", "GET", "DELETE", "PUT", "PATCH"},
+	})
+	handler := c.Handler(mux)
+	log.Println("Server running on 8080 port ... ")
+	migration.Migrate()
+	// utils.LoadInitalData()
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

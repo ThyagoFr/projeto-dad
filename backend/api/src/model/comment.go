@@ -8,7 +8,10 @@ import (
 type Comment struct {
 	gorm.Model
 	Comment  string
-	Rate     uint
+	Rate     float64
 	BookID   uint
 	ReaderID uint
 }
+
+// Comments - Comments
+type Comments []Comment
