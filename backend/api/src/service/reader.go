@@ -33,7 +33,7 @@ func GetAllReaders() Readers {
 
 	var readers Readers
 	db, _ := utils.NewConnection()
-	db.Find(&readers)
+	db.Select("id", "name", "email", "photo", "age").Find(&readers)
 	return readers
 
 }
