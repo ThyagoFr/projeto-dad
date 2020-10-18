@@ -15,6 +15,7 @@ func NewRouter() *mux.Router {
 	open.HandleFunc("/register", Register).Methods("POST")
 	open.HandleFunc("/books", GetBooks).Methods("GET")
 	open.HandleFunc("/sendemail", SendEmailRecoverPassword).Methods("POST")
+	open.HandleFunc("/recover", RecoverPassword).Methods("POST")
 
 	protected := router.PathPrefix("/api/v1").Subrouter()
 	protected.Use(security.JWTMiddleware)
