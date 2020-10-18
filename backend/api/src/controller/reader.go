@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"ufc.com/dad/src/model"
-
 	"github.com/gorilla/mux"
 	h "ufc.com/dad/src/handler"
 	s "ufc.com/dad/src/service"
@@ -36,23 +34,6 @@ func GetOneReader(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&reader)
-
-}
-
-// StoreReader - Store a reader
-func StoreReader(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-	var reader model.Reader
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&reader); err != nil {
-		h.Handler(w, r, http.StatusBadRequest, err.Error())
-		return
-	}
-	bookCreated := s.StoreReader(reader)
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(bookCreated)
 
 }
 

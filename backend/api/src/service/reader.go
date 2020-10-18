@@ -73,3 +73,29 @@ func DeleteReader(id int) error {
 	}
 	return nil
 }
+
+// UpdatePassword - UpdatePassword
+func UpdatePassword(email, password string) error {
+
+	db, _ := utils.NewConnection()
+	reader, err := findReaderByEmail(email)
+	if err != nil {
+		return err
+	}
+	reader.Password, _ = security.HashPassword(password)
+	db.Save(&reader)
+	return nil
+
+}
+
+func findReaderByEmail(email string) (model.Reader, error) {
+
+	db, _ := utils.NewConnection()
+	var reader model.Reader
+	err := db.Where("email = ?", email).Find(&reader).Error
+	if err != nil {
+		return reader, errors.New("Usuario nao encontrado")
+	}
+	return reader, nil
+
+}

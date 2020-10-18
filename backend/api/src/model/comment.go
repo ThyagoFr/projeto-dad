@@ -7,10 +7,10 @@ import (
 // Comment - Comment struct
 type Comment struct {
 	gorm.Model
-	Comment  string
-	Rate     float64
-	BookID   uint
-	ReaderID uint
+	Comment  string  `json:"comment"`
+	Rate     float64 `json:"rate"`
+	BookID   uint    `json:"book_id"`
+	ReaderID uint    `json:"reader_id"`
 }
 
 // Comments - Comments

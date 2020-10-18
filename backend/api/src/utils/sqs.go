@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"log"
+	"errors"
 	"os"
 
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -45,7 +45,6 @@ func createQueue() (url *string, err error) {
 		if aerr, ok := err0.(awserr.Error); ok {
 			switch aerr.Code() {
 			case sqs.ErrCodeQueueNameExists:
-				log.Println("Queue name already exists!")
 				err = err0
 			default:
 				err = err0
@@ -82,7 +81,9 @@ func SendMessage(message Message) error {
 		MessageBody: aws.String("Message struct with email request information"),
 		QueueUrl:    queueURL,
 	})
-
+	if err != nil {
+		return errors.New("Houve um erro ao enviar o email, tente novamente mais tarde")
+	}
 	return err
 
 }

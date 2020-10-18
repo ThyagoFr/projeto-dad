@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,6 +31,9 @@ func GetBookComments(w http.ResponseWriter, r *http.Request) {
 func StoreComment(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	att := mux.Vars(r)
+	idAtt := att["id"]
+	id, _ := strconv.Atoi(idAtt)
 	var comment model.Comment
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
@@ -38,7 +42,13 @@ func StoreComment(w http.ResponseWriter, r *http.Request) {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	s.StoreComment(comment)
+	comment.BookID = uint(id)
+	fmt.Println(comment)
+	err := s.StoreComment(comment)
+	if err != nil {
+		h.Handler(w, r, http.StatusBadRequest, err.Error())
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 
 }

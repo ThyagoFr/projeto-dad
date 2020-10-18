@@ -17,8 +17,8 @@ type BookInfo struct {
 	Qtd     int
 }
 
-// GetAllBooks - Get all books
-func GetAllBooks() []BookInfo {
+// GetBooks - Get all books
+func GetBooks() []BookInfo {
 
 	var result []BookInfo
 	db, _ := utils.NewConnection()
@@ -32,8 +32,8 @@ func GetAllBooks() []BookInfo {
 
 }
 
-// GetOneBook - Get one specific book
-func GetOneBook(id uint) (*model.Book, error) {
+// GetBook - Get one specific book
+func GetBook(id uint) (*model.Book, error) {
 
 	db, _ := utils.NewConnection()
 	var book model.Book

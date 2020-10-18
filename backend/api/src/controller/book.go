@@ -12,7 +12,7 @@ import (
 func GetBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	response := s.GetAllBooks()
+	response := s.GetBooks()
 	if err := json.NewEncoder(w).Encode(&response); err != nil {
 		h.Handler(w, r, http.StatusInternalServerError, err.Error())
 	}

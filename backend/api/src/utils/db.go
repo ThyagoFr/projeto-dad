@@ -8,7 +8,7 @@ import (
 )
 
 // Database - Database struct
-type Database struct {
+type database struct {
 	dialect  string
 	host     string
 	port     string
@@ -18,7 +18,7 @@ type Database struct {
 }
 
 // New -- Cria uma nova Struct com os valores de configuração
-func (d *Database) New() {
+func (d *database) new() {
 	d.dialect = "postgres"
 	d.host = "localhost"
 	d.port = "5432"
@@ -30,8 +30,8 @@ func (d *Database) New() {
 
 // NewConnection -- Cria uma nova conexão com o banco
 func NewConnection() (*gorm.DB, error) {
-	databaseParams := Database{}
-	databaseParams.New()
+	databaseParams := database{}
+	databaseParams.new()
 	stringConnection := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",
 		databaseParams.host, databaseParams.port,
 		databaseParams.user, databaseParams.dbname,
