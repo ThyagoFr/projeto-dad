@@ -22,6 +22,8 @@ func NewRouter() *mux.Router {
 	protected.HandleFunc("/readers", GetAllReaders).Methods("GET")
 	protected.HandleFunc("/readers/{id}", GetOneReader).Methods("GET")
 	protected.HandleFunc("/readers/{id}", DeleteReader).Methods("DELETE")
+	protected.HandleFunc("/readers/{id}/interests", GetInterests).Methods("GET")
+	protected.HandleFunc("/readers/{id}/interests", StoreInterest).Methods("POST")
 	protected.HandleFunc("/books/{id}/comments", GetBookComments).Methods("GET")
 	protected.HandleFunc("/books/{id}/comments", StoreComment).Methods("POST")
 

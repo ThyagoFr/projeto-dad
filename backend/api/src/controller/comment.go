@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -43,7 +42,6 @@ func StoreComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	comment.BookID = uint(id)
-	fmt.Println(comment)
 	err := s.StoreComment(comment)
 	if err != nil {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
