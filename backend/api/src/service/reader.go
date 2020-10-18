@@ -52,12 +52,16 @@ func GetOneReader(id uint) (*model.Reader, error) {
 }
 
 // StoreReader - Store a reader
-func StoreReader(reader model.Reader) *model.Reader {
+func StoreReader(reader model.Reader) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
+	_, err := findReaderByEmail(reader.Email)
+	if err == nil {
+		return &reader, errors.New("Email ja utilizado")
+	}
 	reader.Password, _ = security.HashPassword(reader.Password)
 	db.Create(&reader)
-	return &reader
+	return &reader, nil
 
 }
 

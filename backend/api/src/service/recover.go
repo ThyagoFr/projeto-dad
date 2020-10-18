@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"math/rand"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 func SendEmail(email string) error {
 
 	result, err := getReaderData(email)
+	log.Println(err)
 	if err != nil {
 		return err
 	}
@@ -45,7 +47,7 @@ func getReaderData(email string) (utils.Message, error) {
 
 	db, _ := utils.NewConnection()
 	var data utils.Message
-	err := db.Raw("SELECT name, email AS to FROM readers WHERE email = ?", email).Scan(&data)
+	err := db.Raw("SELECT name, email AS to FROM readers WHERE email = ?", email).Scan(&data).Error
 	if err != nil {
 		return data, errors.New("Usuario nao encontrado")
 	}
@@ -72,7 +74,7 @@ func createRegister(data utils.Message) {
 
 	db, _ := utils.NewConnection()
 	var rec model.Recover
-	err := db.First(&rec, "token = ? AND email = ? AND retrived IS NOT NULL", rec.Token, rec.Email).Error
+	err := db.First(&rec, "token = ? AND email = ? AND retrieved IS NOT NULL", rec.Token, rec.Email).Error
 	if err == gorm.ErrRecordNotFound {
 		rec.Token = data.Token
 		rec.Email = data.To
@@ -87,9 +89,9 @@ func findRegister(token string) (model.Recover, error) {
 
 	db, _ := utils.NewConnection()
 	var rec model.Recover
-	err := db.First(&rec, "token = ? AND retrived IS NULL", rec.Token).Error
+	err := db.First(&rec, "token = ? AND retrieved IS NULL", rec.Token).Error
 	if err == gorm.ErrRecordNotFound {
-		return rec, err
+		return rec, errors.New("Token inválido")
 	}
 	return rec, nil
 

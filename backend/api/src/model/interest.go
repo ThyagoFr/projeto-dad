@@ -7,7 +7,7 @@ import (
 // Interest - Interest struct
 type Interest struct {
 	gorm.Model
-	BookID   uint
+	BookID   uint `json:"book_id"`
 	ReaderID uint
 }
 

@@ -10,7 +10,7 @@ func NewRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	open := router.PathPrefix("/api").Subrouter()
+	open := router.PathPrefix("/api/v1").Subrouter()
 	open.HandleFunc("/login", Login).Methods("POST")
 	open.HandleFunc("/register", Register).Methods("POST")
 	open.HandleFunc("/books", GetBooks).Methods("GET")

@@ -55,7 +55,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	bookCreated := s.StoreReader(reader)
+	bookCreated, err := s.StoreReader(reader)
+	if err != nil {
+		h.Handler(w, r, http.StatusBadRequest, err.Error())
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(bookCreated)
 
