@@ -52,3 +52,23 @@ func StoreInterest(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 }
+
+// RemoveInterest - RemoveInterest
+func RemoveInterest(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	att := mux.Vars(r)
+	idAtt := att["id_u"]
+	idU, _ := strconv.Atoi(idAtt)
+
+	idAtt = att["id_i"]
+	idI, _ := strconv.Atoi(idAtt)
+
+	err := s.RemoveInterest(uint(idU), uint(idI))
+	if err != nil {
+		h.Handler(w, r, http.StatusBadRequest, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
+
+}

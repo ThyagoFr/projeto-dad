@@ -6,14 +6,15 @@ import (
 
 // BookInfo - BookInfo
 type BookInfo struct {
-	ID      int
-	Title   string
-	Cover   string
-	Genre   string
-	Author  string
-	Summary string
-	Average float64
-	Qtd     int
+	ID         int
+	Interestid int
+	Title      string
+	Cover      string
+	Genre      string
+	Author     string
+	Summary    string
+	Average    float64
+	Qtd        int
 }
 
 // GetBooks - Get all books

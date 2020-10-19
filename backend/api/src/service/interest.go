@@ -8,13 +8,13 @@ import (
 // GetInterests - GetInterests
 func GetInterests(idReader uint) []BookInfo {
 
-	var result []BookInfo
+	result := []BookInfo{}
 	db, _ := utils.NewConnection()
-	db.Raw(`select id, title, cover, genre,	author , summary, average, qtd 
+	db.Raw(`select id, interestid ,  title, cover, genre,	author , summary, average, qtd 
 			from
 			(
-			(select book_id from interests where reader_id = ?) i
-			left join
+			(select book_id, id as interestid from interests where reader_id = ? AND deleted_at IS NULL) i
+			inner join
 			(select * from books) b
 			on b.id = i.book_id
 			) res
@@ -33,6 +33,17 @@ func StoreInterest(interest model.Interest) error {
 	var reader model.Reader
 	db.Where("id = ?", interest.ReaderID).Find(&reader)
 	err := db.Model(&reader).Association("Interests").Append(&interest)
+	return err
+
+}
+
+// RemoveInterest - RemoveInterest
+func RemoveInterest(idU, idI uint) error {
+
+	db, _ := utils.NewConnection()
+	var interest model.Interest
+	db.Where("id = ?", idI).Find(&interest)
+	err := db.Delete(interest).Error
 	return err
 
 }
