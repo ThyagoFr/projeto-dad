@@ -10,7 +10,7 @@ func GetInterests(idReader uint) []BookInfo {
 
 	var result []BookInfo
 	db, _ := utils.NewConnection()
-	db.Raw(`select title, cover, genre,	author , summary, average, qtd 
+	db.Raw(`select id, title, cover, genre,	author , summary, average, qtd 
 			from
 			(
 			(select book_id from interests where reader_id = ?) i

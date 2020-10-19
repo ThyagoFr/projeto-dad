@@ -12,19 +12,20 @@ import (
 type Readers []model.Reader
 
 // Login - Login
-func Login(email, pass string) (string, error) {
+func Login(email, pass string) (string, *model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	var reader model.Reader
 	err := db.Where("email = ?", email).Find(&reader).Error
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	match := security.CheckPasswordHash(pass, reader.Password)
 	if match {
-		return security.GenerateToken(reader.ID)
+		token, error := security.GenerateToken(reader.ID)
+		return token, &reader, error
 	}
-	return "", errors.New("Check your credentials")
+	return "", nil, errors.New("Check your credentials")
 
 }
 
@@ -56,7 +57,7 @@ func StoreReader(reader model.Reader) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	_, err := findReaderByEmail(reader.Email)
-	if err == nil {
+	if err != nil {
 		return &reader, errors.New("Email ja utilizado")
 	}
 	reader.Password, _ = security.HashPassword(reader.Password)

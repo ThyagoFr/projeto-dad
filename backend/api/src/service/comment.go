@@ -7,6 +7,7 @@ import (
 
 // CommentResponse - CommentResponse
 type CommentResponse struct {
+	Email     string
 	User      string
 	UserPhoto string
 	Comment   string
@@ -22,13 +23,14 @@ func GetComments(idBook uint) CommentResponseList {
 	var response CommentResponseList
 	db, _ := utils.NewConnection()
 	db.Raw(`SELECT 
+			email,
 			name as user,
 			photo as user_photo,
 			rate,
 			comment
 			FROM
 			(SELECT * FROM readers) r
-			LEFT JOIN
+			INNER JOIN
 			(SELECT * FROM comments WHERE book_id = ?) c
 			ON c.reader_id = r.id
 		  `, idBook).Scan(&response)

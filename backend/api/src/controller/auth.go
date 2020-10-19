@@ -10,7 +10,8 @@ import (
 )
 
 type response struct {
-	Token string `json:"token"`
+	Token  string        `json:"token"`
+	Reader *model.Reader `json:"reader"`
 }
 
 type request struct {
@@ -33,12 +34,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	tkn, err := s.Login(req.Email, req.Password)
+	tkn, reader, err := s.Login(req.Email, req.Password)
 	if err != nil {
 		h.Handler(w, r, http.StatusUnauthorized, err.Error())
 		return
 	}
-	rsp := response{Token: tkn}
+	rsp := response{Token: tkn, Reader: reader}
 	if err = json.NewEncoder(w).Encode(&rsp); err != nil {
 		h.Handler(w, r, http.StatusInternalServerError, err.Error())
 	}

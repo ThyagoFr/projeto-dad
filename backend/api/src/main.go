@@ -23,9 +23,8 @@ func init() {
 func main() {
 
 	mux := controller.NewRouter()
-	c := cors.New(cors.Options{
-		AllowedMethods: []string{"POST", "GET", "DELETE", "PUT", "PATCH"},
-	})
+	c := cors.AllowAll()
+
 	handler := c.Handler(mux)
 	log.Println("Server running on 8080 port ... ")
 	migration.Migrate()

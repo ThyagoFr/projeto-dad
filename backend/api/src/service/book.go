@@ -1,7 +1,6 @@
 package service
 
 import (
-	"ufc.com/dad/src/model"
 	"ufc.com/dad/src/utils"
 )
 
@@ -33,14 +32,16 @@ func GetBooks() []BookInfo {
 }
 
 // GetBook - Get one specific book
-func GetBook(id uint) (*model.Book, error) {
+func GetBook(id uint) BookInfo {
 
+	var result BookInfo
 	db, _ := utils.NewConnection()
-	var book model.Book
-	err := db.Where("id = ?", id).Find(&book).Error
-	if err != nil {
-		return nil, err
-	}
-	return &book, nil
+	db.Raw(`select id, title, cover, genre,	author , summary, average, qtd 
+			from
+			books b
+			left join
+			( select book_id, sum(rate)/count(book_id) as average, count(book_id) as qtd from comments c group by book_id) c
+			on c.book_id = b.id where b.id = ?`, id).Scan(&result)
+	return result
 
 }

@@ -14,6 +14,7 @@ func NewRouter() *mux.Router {
 	open.HandleFunc("/login", Login).Methods("POST")
 	open.HandleFunc("/register", Register).Methods("POST")
 	open.HandleFunc("/books", GetBooks).Methods("GET")
+	open.HandleFunc("/books/{id}", GetBook).Methods("GET")
 	open.HandleFunc("/sendemail", SendEmailRecoverPassword).Methods("POST")
 	open.HandleFunc("/recover", RecoverPassword).Methods("POST")
 
