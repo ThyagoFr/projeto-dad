@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	h "ufc.com/dad/src/handler"
 	"ufc.com/dad/src/model"
@@ -48,15 +49,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 // Register - Register a reader
 func Register(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "application/json")
-	var reader model.Reader
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&reader); err != nil {
-		h.Handler(w, r, http.StatusBadRequest, err.Error())
-		return
+	file, _, err := r.FormFile("profile")
+	if err != nil {
+		panic(err)
 	}
-	bookCreated, err := s.StoreReader(reader)
+	defer file.Close()
+
+	var reader model.Reader
+
+	reader.Name = r.FormValue("name")
+	u64, _ := strconv.ParseUint(r.FormValue("age"), 10, 32)
+	reader.Age = uint(u64)
+	reader.Email = r.FormValue("email")
+	reader.Password = r.FormValue("password")
+
+	bookCreated, err := s.StoreReader(reader, file)
 	if err != nil {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return

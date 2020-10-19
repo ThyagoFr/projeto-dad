@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"log"
+	"mime/multipart"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -16,7 +18,7 @@ var (
 	s3session *s3.S3
 )
 
-func createS3Session() {
+func createS3Session(awsBucket string) {
 
 	awsRegion := os.Getenv("AWS_REGION")
 
@@ -25,21 +27,15 @@ func createS3Session() {
 			Region: aws.String(awsRegion),
 		}),
 	))
-	createBucket()
+	createBucket(awsBucket)
 
 }
 
-func createBucket() (err error) {
-
-	awsBucket := os.Getenv("AWS_BUCKET_NAME")
-	awsRegion := os.Getenv("AWS_REGION")
+func createBucket(awsBucket string) (err error) {
 
 	_, err0 := s3session.CreateBucket(
 		&s3.CreateBucketInput{
 			Bucket: aws.String(awsBucket),
-			CreateBucketConfiguration: &s3.CreateBucketConfiguration{
-				LocationConstraint: aws.String(awsRegion),
-			},
 		},
 	)
 
@@ -59,12 +55,11 @@ func createBucket() (err error) {
 	return
 }
 
-// UploadToS3 - Upload image to S3
-func UploadToS3(key string, file *os.File) (string, error) {
+// UploadBookCoverToS3 - Upload image to S3
+func UploadBookCoverToS3(key string, file *os.File) (string, error) {
 
-	createS3Session()
-
-	awsBucket := os.Getenv("AWS_BUCKET_NAME")
+	awsBucket := os.Getenv("AWS_BUCKET_NAME_BOOK")
+	createS3Session(awsBucket)
 
 	_, errF := s3session.PutObject(
 		&s3.PutObjectInput{
@@ -78,6 +73,28 @@ func UploadToS3(key string, file *os.File) (string, error) {
 		log.Fatal(errF)
 	}
 	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + key
+	return resource, errF
+
+}
+
+// UploadReaderProfileToS3 - UploadReaderProfileToS3
+func UploadReaderProfileToS3(key uint, file multipart.File) (string, error) {
+
+	awsBucket := os.Getenv("AWS_BUCKET_NAME_READER")
+	createS3Session(awsBucket)
+
+	_, errF := s3session.PutObject(
+		&s3.PutObjectInput{
+			Body:   file,
+			Bucket: aws.String(awsBucket),
+			Key:    aws.String(fmt.Sprint(key)),
+			ACL:    aws.String(s3.BucketCannedACLPublicRead),
+		},
+	)
+	if errF != nil {
+		log.Fatal(errF)
+	}
+	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + fmt.Sprint(key)
 	return resource, errF
 
 }

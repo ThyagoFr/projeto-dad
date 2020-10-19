@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"mime/multipart"
 
 	"ufc.com/dad/src/model"
 	"ufc.com/dad/src/security"
@@ -53,15 +54,17 @@ func GetOneReader(id uint) (*model.Reader, error) {
 }
 
 // StoreReader - Store a reader
-func StoreReader(reader model.Reader) (*model.Reader, error) {
+func StoreReader(reader model.Reader, file multipart.File) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	_, err := findReaderByEmail(reader.Email)
-	if err != nil {
+	if err == nil {
 		return &reader, errors.New("Email ja utilizado")
 	}
 	reader.Password, _ = security.HashPassword(reader.Password)
 	db.Create(&reader)
+	reader.Photo, _ = utils.UploadReaderProfileToS3(reader.ID, file)
+	db.Save(&reader)
 	return &reader, nil
 
 }
@@ -97,8 +100,8 @@ func findReaderByEmail(email string) (model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	var reader model.Reader
-	err := db.Where("email = ?", email).Find(&reader).Error
-	if err != nil {
+	db.Where("email = ?", email).Find(&reader)
+	if reader.Email == "" {
 		return reader, errors.New("Usuario nao encontrado")
 	}
 	return reader, nil
