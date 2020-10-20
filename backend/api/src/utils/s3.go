@@ -85,14 +85,14 @@ func UploadBookCoverToS3(key, cover string) (string, error) {
 		&s3.PutObjectInput{
 			Body:   file,
 			Bucket: aws.String(awsBucket),
-			Key:    aws.String(key),
+			Key:    aws.String(key + ".jpeg"),
 			ACL:    aws.String(s3.BucketCannedACLPublicRead),
 		},
 	)
 	if errF != nil {
 		log.Fatal(errF)
 	}
-	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + key
+	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + key + ".jpeg"
 	return resource, errF
 
 }

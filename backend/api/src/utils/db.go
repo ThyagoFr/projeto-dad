@@ -20,10 +20,10 @@ type database struct {
 // New -- Cria uma nova Struct com os valores de configuração
 func (d *database) new() {
 	d.dialect = "postgres"
-	d.host = "localhost"
+	d.host = "appdad.chct2onrz0xz.us-east-1.rds.amazonaws.com"
 	d.port = "5432"
-	d.user = "appdad"
-	d.password = "392035"
+	d.user = "postgres"
+	d.password = "392035ab"
 	d.dbname = "appdad"
 
 }
