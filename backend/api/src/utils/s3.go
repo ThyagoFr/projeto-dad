@@ -2,8 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"mime/multipart"
+	"net/http"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -56,10 +58,28 @@ func createBucket(awsBucket string) (err error) {
 }
 
 // UploadBookCoverToS3 - Upload image to S3
-func UploadBookCoverToS3(key string, file *os.File) (string, error) {
+func UploadBookCoverToS3(key, cover string) (string, error) {
 
 	awsBucket := os.Getenv("AWS_BUCKET_NAME_BOOK")
 	createS3Session(awsBucket)
+
+	file, err := os.Create("temp.jpeg")
+
+	response, err := http.Get(cover)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer response.Body.Close()
+
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	file.Close()
+
+	file, err = os.Open("temp.jpeg")
 
 	_, errF := s3session.PutObject(
 		&s3.PutObjectInput{

@@ -96,6 +96,19 @@ func UpdatePassword(email, password string) error {
 
 }
 
+// UpdateReader - UpdateReader
+func UpdateReader(reader model.Reader) error {
+
+	db, _ := utils.NewConnection()
+	err := db.Where("id = ?", reader.ID).Find(&reader).Error
+	if err != nil {
+		return errors.New("Usuario nao encontrado")
+	}
+	db.Model(&reader).Updates(&reader)
+	return nil
+
+}
+
 func findReaderByEmail(email string) (model.Reader, error) {
 
 	db, _ := utils.NewConnection()

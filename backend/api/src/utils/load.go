@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"ufc.com/dad/src/model"
 )
@@ -61,23 +63,9 @@ func LoadInitalData() {
 			title := element.VolumeInfo.Title
 			cover := element.VolumeInfo.ImageLinks.SmallThumbnail
 
-			/* 			file, err := os.Create("tmp.jpg")
-			   			if err != nil {
-			   				log.Fatal(err)
-			   			}
-			   			defer file.Close()
-
-			   			response, err := http.Get(cover)
-
-			   			if err != nil {
-			   				log.Fatal(err)
-			   			}
-			   			defer response.Body.Close()
-
-			   			_, err = io.Copy(file, response.Body)
-			   			if err != nil {
-			   				log.Fatal(err)
-			   			} */
+			if !strings.Contains(cover, "http://") {
+				break
+			}
 
 			genre := "Desconhecido"
 			author := "Desconhecido"
@@ -90,19 +78,23 @@ func LoadInitalData() {
 			}
 
 			summary := element.VolumeInfo.Description
-			// url, _ := UploadToS3(element.VolumeInfo.IndustryIdentifiers[0].Identifier, file)
+			url := ""
+			if len(element.VolumeInfo.IndustryIdentifiers) != 0 {
+				url, _ = UploadBookCoverToS3(element.VolumeInfo.IndustryIdentifiers[0].Identifier, cover)
+			}
 			book := model.Book{
 				Title:   title,
-				Cover:   cover,
+				Cover:   url,
 				Genre:   genre,
 				Author:  author,
 				Summary: summary,
 			}
 
-			// os.Remove("tmp.jpg")
+			os.Remove("temp.jpeg")
 			db.Create(&book)
 		}
 
 	}
+	log.Println("Carga inicial completa...")
 
 }
