@@ -49,7 +49,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 // Register - Register a reader
 func Register(w http.ResponseWriter, r *http.Request) {
 
-	file, _, err := r.FormFile("profile")
+	file, header, err := r.FormFile("profile")
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +63,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	reader.Email = r.FormValue("email")
 	reader.Password = r.FormValue("password")
 
-	bookCreated, err := s.StoreReader(reader, file)
+	bookCreated, err := s.StoreReader(reader, file, header.Filename)
 	if err != nil {
 		h.Handler(w, r, http.StatusBadRequest, err.Error())
 		return

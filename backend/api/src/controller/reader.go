@@ -55,7 +55,7 @@ func UpdateReader(w http.ResponseWriter, r *http.Request) {
 		u64, _ = strconv.ParseUint(ageStr, 10, 32)
 	}
 
-	file, _, err := r.FormFile("profile")
+	file, header, err := r.FormFile("profile")
 	if err != nil {
 		file = nil
 	} else {
@@ -68,7 +68,7 @@ func UpdateReader(w http.ResponseWriter, r *http.Request) {
 	reader.ID = uint(id)
 	fmt.Println(reader)
 
-	err = s.UpdateReader(reader, file)
+	err = s.UpdateReader(reader, file, header.Filename)
 	if err != nil {
 		h.Handler(w, r, http.StatusNotFound, err.Error())
 		return
