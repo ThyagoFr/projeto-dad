@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -41,22 +42,33 @@ func GetOneReader(w http.ResponseWriter, r *http.Request) {
 // UpdateReader - Update a reader
 func UpdateReader(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "application/json")
 	att := mux.Vars(r)
 	idAtt := att["id"]
 	id, _ := strconv.Atoi(idAtt)
 
 	var reader model.Reader
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
 
-	if err := decoder.Decode(&reader); err != nil {
-		h.Handler(w, r, http.StatusBadRequest, err.Error())
-		return
+	reader.Name = r.FormValue("name")
+	ageStr := r.FormValue("age")
+	var u64 uint64
+	if ageStr != "" {
+		u64, _ = strconv.ParseUint(ageStr, 10, 32)
 	}
-	reader.ID = uint(id)
 
-	err := s.UpdateReader(reader)
+	file, _, err := r.FormFile("profile")
+	if err != nil {
+		file = nil
+	} else {
+		defer file.Close()
+	}
+
+	reader.Age = uint(u64)
+	reader.Email = r.FormValue("email")
+	reader.Password = r.FormValue("password")
+	reader.ID = uint(id)
+	fmt.Println(reader)
+
+	err = s.UpdateReader(reader, file)
 	if err != nil {
 		h.Handler(w, r, http.StatusNotFound, err.Error())
 		return

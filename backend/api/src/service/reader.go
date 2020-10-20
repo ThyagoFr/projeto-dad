@@ -97,14 +97,23 @@ func UpdatePassword(email, password string) error {
 }
 
 // UpdateReader - UpdateReader
-func UpdateReader(reader model.Reader) error {
+func UpdateReader(reader model.Reader, file multipart.File) error {
 
 	db, _ := utils.NewConnection()
-	err := db.Where("id = ?", reader.ID).Find(&reader).Error
+	var oldreader model.Reader
+	err := db.Where("id = ?", reader.ID).Find(&oldreader).Error
 	if err != nil {
 		return errors.New("Usuario nao encontrado")
 	}
-	db.Model(&reader).Updates(&reader)
+	if file != nil {
+		reader.Photo, _ = utils.UploadReaderProfileToS3(reader.ID, file)
+	}
+
+	if reader.Password != "" {
+		reader.Password, _ = security.HashPassword(reader.Password)
+	}
+	oldreader = reader
+	db.Model(&oldreader).Updates(&oldreader)
 	return nil
 
 }
