@@ -54,7 +54,7 @@ func GetOneReader(id uint) (*model.Reader, error) {
 }
 
 // StoreReader - Store a reader
-func StoreReader(reader model.Reader, file multipart.File) (*model.Reader, error) {
+func StoreReader(reader model.Reader, file multipart.File, filename string) (*model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	_, err := findReaderByEmail(reader.Email)
@@ -63,7 +63,7 @@ func StoreReader(reader model.Reader, file multipart.File) (*model.Reader, error
 	}
 	reader.Password, _ = security.HashPassword(reader.Password)
 	db.Create(&reader)
-	reader.Photo, _ = utils.UploadReaderProfileToS3(reader.ID, file)
+	reader.Photo, _ = utils.UploadReaderProfileToS3(filename, file)
 	db.Save(&reader)
 	return &reader, nil
 
@@ -97,7 +97,7 @@ func UpdatePassword(email, password string) error {
 }
 
 // UpdateReader - UpdateReader
-func UpdateReader(reader model.Reader, file multipart.File) error {
+func UpdateReader(reader model.Reader, file multipart.File, filename string) error {
 
 	db, _ := utils.NewConnection()
 	var oldreader model.Reader
@@ -106,7 +106,7 @@ func UpdateReader(reader model.Reader, file multipart.File) error {
 		return errors.New("Usuario nao encontrado")
 	}
 	if file != nil {
-		reader.Photo, _ = utils.UploadReaderProfileToS3(reader.ID, file)
+		reader.Photo, _ = utils.UploadReaderProfileToS3(filename, file)
 	}
 
 	if reader.Password != "" {

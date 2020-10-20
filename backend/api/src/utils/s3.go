@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -98,7 +97,7 @@ func UploadBookCoverToS3(key, cover string) (string, error) {
 }
 
 // UploadReaderProfileToS3 - UploadReaderProfileToS3
-func UploadReaderProfileToS3(key uint, file multipart.File) (string, error) {
+func UploadReaderProfileToS3(filename string, file multipart.File) (string, error) {
 
 	awsBucket := os.Getenv("AWS_BUCKET_NAME_READER")
 	createS3Session(awsBucket)
@@ -107,14 +106,14 @@ func UploadReaderProfileToS3(key uint, file multipart.File) (string, error) {
 		&s3.PutObjectInput{
 			Body:   file,
 			Bucket: aws.String(awsBucket),
-			Key:    aws.String(fmt.Sprint(key)),
+			Key:    aws.String(filename),
 			ACL:    aws.String(s3.BucketCannedACLPublicRead),
 		},
 	)
 	if errF != nil {
 		log.Fatal(errF)
 	}
-	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + fmt.Sprint(key)
+	resource := "https://" + awsBucket + ".s3.amazonaws.com/" + filename
 	return resource, errF
 
 }
