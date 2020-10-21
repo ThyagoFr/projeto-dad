@@ -15,14 +15,14 @@ def lambda_handler(event, context):
             <body>
                 <p>Olá, {0}<br>
                 Você solicitou a recuperação de senha na plataforma BooksDAD . <br>
-                Basta utilizar o token <b> {1} </b> para iniciar o processo de recuperação de senha.
+                Sua nova senha temporária é <b> {1} </b>. Ao entrar na plataforma, por favor atualizar sua senha para uma de sua escolha.
                 </p>
             </body>
             </html>
             """.format(name, token)
 
     msg = MIMEMultipart("alternative")
-    password = "aaaaaaaaaaaaaaaaaa"
+    password = "392035ab"
     msg['From'] = "bookdad2020@gmail.com"
     msg['To'] = to
     msg['Subject'] = "Recuperação de senha"

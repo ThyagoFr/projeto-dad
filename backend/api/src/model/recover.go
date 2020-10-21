@@ -1,7 +1,7 @@
 package model
 
 import (
-	"time"
+	"database/sql"
 
 	"gorm.io/gorm"
 )
@@ -11,5 +11,5 @@ type Recover struct {
 	gorm.Model
 	Email     string
 	Token     string
-	Retrieved time.Time
+	Retrieved sql.NullTime
 }

@@ -2,11 +2,7 @@ package service
 
 import (
 	"errors"
-	"log"
 	"math/rand"
-	"time"
-
-	"gorm.io/gorm"
 
 	"ufc.com/dad/src/model"
 
@@ -17,7 +13,6 @@ import (
 func SendEmail(email string) error {
 
 	result, err := getReaderData(email)
-	log.Println(err)
 	if err != nil {
 		return err
 	}
@@ -25,20 +20,7 @@ func SendEmail(email string) error {
 	if err != nil {
 		return err
 	}
-	createRegister(result)
 	return nil
-
-}
-
-// RecoverPassword - RecoverPassword
-func RecoverPassword(token string, password string) error {
-
-	reader, err := findRegister(token)
-	if err != nil {
-		return err
-	}
-	err = UpdatePassword(reader.Email, password)
-	return err
 
 }
 
@@ -46,13 +28,17 @@ func RecoverPassword(token string, password string) error {
 func getReaderData(email string) (utils.Message, error) {
 
 	db, _ := utils.NewConnection()
-	var data utils.Message
-	err := db.Raw("SELECT name, email AS to FROM readers WHERE email = ?", email).Scan(&data).Error
+	var reader model.Reader
+	var message utils.Message
+	err := db.Raw("SELECT * FROM readers WHERE email = ?", email).Scan(&reader).Error
 	if err != nil {
-		return data, errors.New("Usuario nao encontrado")
+		return message, errors.New("Usuario nao encontrado")
 	}
-	data.Token = generateRandomToken()
-	return data, nil
+	message.Token = generateRandomToken()
+	message.To = reader.Email
+	message.Name = reader.Name
+	UpdatePassword(reader.Email, message.Token)
+	return message, nil
 
 }
 
@@ -66,33 +52,5 @@ func generateRandomToken() string {
 		s[index] = letters[rand.Intn(len(letters))]
 	}
 	return string(s)
-
-}
-
-// CreateRegister - RecoverPassword
-func createRegister(data utils.Message) {
-
-	db, _ := utils.NewConnection()
-	var rec model.Recover
-	err := db.First(&rec, "token = ? AND email = ? AND retrieved IS NOT NULL", rec.Token, rec.Email).Error
-	if err == gorm.ErrRecordNotFound {
-		rec.Token = data.Token
-		rec.Email = data.To
-		db.Create(&rec)
-	} else {
-		rec.Retrieved = time.Now()
-		db.Save(&rec)
-	}
-}
-
-func findRegister(token string) (model.Recover, error) {
-
-	db, _ := utils.NewConnection()
-	var rec model.Recover
-	err := db.First(&rec, "token = ? AND retrieved IS NULL", rec.Token).Error
-	if err == gorm.ErrRecordNotFound {
-		return rec, errors.New("Token inválido")
-	}
-	return rec, nil
 
 }

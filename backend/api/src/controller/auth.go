@@ -92,23 +92,3 @@ func SendEmailRecoverPassword(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 }
-
-// RecoverPassword - Send an email to recover user password
-func RecoverPassword(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-	var request password
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&request); err != nil {
-		h.Handler(w, r, http.StatusBadRequest, err.Error())
-		return
-	}
-	err := s.RecoverPassword(request.Token, request.NewPassword)
-	if err != nil {
-		h.Handler(w, r, http.StatusBadRequest, err.Error())
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-
-}
