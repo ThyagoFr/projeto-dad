@@ -3,7 +3,6 @@ package service
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -95,11 +94,12 @@ func findRegister(token string) (model.Recover, error) {
 
 	db, _ := utils.NewConnection()
 	var rec model.Recover
-	fmt.Println(token)
 	err := db.First(&rec, "token = ? AND retrieved IS NULL", token).Error
 	if err == gorm.ErrRecordNotFound {
 		return rec, errors.New("Token inválido")
 	}
+	rec.Retrieved.Scan(time.Now())
+	db.Save(&rec)
 	return rec, nil
 
 }
