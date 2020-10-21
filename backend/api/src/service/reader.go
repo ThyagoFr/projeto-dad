@@ -97,13 +97,13 @@ func UpdatePassword(email, password string) error {
 }
 
 // UpdateReader - UpdateReader
-func UpdateReader(reader model.Reader, file multipart.File, filename string) error {
+func UpdateReader(reader model.Reader, file multipart.File, filename string) (model.Reader, error) {
 
 	db, _ := utils.NewConnection()
 	var oldreader model.Reader
 	err := db.Where("id = ?", reader.ID).Find(&oldreader).Error
 	if err != nil {
-		return errors.New("Usuario nao encontrado")
+		return oldreader, errors.New("Usuario nao encontrado")
 	}
 	if file != nil {
 		reader.Photo, _ = utils.UploadReaderProfileToS3(filename, file)
@@ -114,7 +114,7 @@ func UpdateReader(reader model.Reader, file multipart.File, filename string) err
 	}
 	oldreader = reader
 	db.Model(&oldreader).Updates(&oldreader)
-	return nil
+	return oldreader, nil
 
 }
 

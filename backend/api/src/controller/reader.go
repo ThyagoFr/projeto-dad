@@ -68,12 +68,16 @@ func UpdateReader(w http.ResponseWriter, r *http.Request) {
 	reader.ID = uint(id)
 	fmt.Println(reader)
 
-	err = s.UpdateReader(reader, file, header.Filename)
+	newreader, err := s.UpdateReader(reader, file, header.Filename)
 	if err != nil {
 		h.Handler(w, r, http.StatusNotFound, err.Error())
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+
+	if err = json.NewEncoder(w).Encode(&newreader); err != nil {
+		h.Handler(w, r, http.StatusInternalServerError, err.Error())
+	}
 
 }
 
