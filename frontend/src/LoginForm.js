@@ -123,7 +123,7 @@ function LoginForm({ handleCloseDrawer, showDrawer, onSubmit }) {
     form.validateFields().then((values) => {
       const { username, ...userDetails } = values
 
-      Object.entries(userDetails).map((k, v) => {
+      Object.entries(userDetails).map(([k, v], i) => {
         formData.append(k, v)
       })
 
