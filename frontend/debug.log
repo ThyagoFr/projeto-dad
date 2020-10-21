@@ -1,0 +1,2 @@
+[1019/112643.910:ERROR:directory_reader_win.cc(43)] FindFirstFile: O sistema não pode encontrar o caminho especificado. (0x3)
+[1019/150030.672:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
