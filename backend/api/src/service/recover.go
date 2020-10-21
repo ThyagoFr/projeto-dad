@@ -1,7 +1,9 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -17,7 +19,6 @@ import (
 func SendEmail(email string) error {
 
 	result, err := getReaderData(email)
-	log.Println(err)
 	if err != nil {
 		return err
 	}
@@ -59,7 +60,7 @@ func getReaderData(email string) (utils.Message, error) {
 // GenerateRandomToken - GenerateRandomToken
 func generateRandomToken() string {
 
-	const size = 8
+	const size = 12
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	s := make([]rune, size)
 	for index := range s {
@@ -74,22 +75,28 @@ func createRegister(data utils.Message) {
 
 	db, _ := utils.NewConnection()
 	var rec model.Recover
-	err := db.First(&rec, "token = ? AND email = ? AND retrieved IS NOT NULL", rec.Token, rec.Email).Error
-	if err == gorm.ErrRecordNotFound {
-		rec.Token = data.Token
-		rec.Email = data.To
-		db.Create(&rec)
-	} else {
-		rec.Retrieved = time.Now()
+	db.Raw("SELECT * FROM recovers WHERE email = ? AND retrieved IS NULL", data.To).Scan(&rec)
+	if rec.ID != 0 {
+		rec.Retrieved.Scan(time.Now())
 		db.Save(&rec)
+		log.Println(rec)
 	}
+	var rec2 model.Recover
+	rec2.Token = data.Token
+	rec2.Email = data.To
+	rec2.Retrieved = sql.NullTime{}
+
+	db.Create(&rec2)
+	log.Println(rec2)
+
 }
 
 func findRegister(token string) (model.Recover, error) {
 
 	db, _ := utils.NewConnection()
 	var rec model.Recover
-	err := db.First(&rec, "token = ? AND retrieved IS NULL", rec.Token).Error
+	fmt.Println(token)
+	err := db.First(&rec, "token = ? AND retrieved IS NULL", token).Error
 	if err == gorm.ErrRecordNotFound {
 		return rec, errors.New("Token inválido")
 	}
