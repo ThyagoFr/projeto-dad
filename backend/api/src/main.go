@@ -16,8 +16,8 @@ func main() {
 	c := cors.AllowAll()
 
 	handler := c.Handler(mux)
-	log.Println("Server running on 80 port ... ")
+	log.Println("Server running on 8080 port ... ")
 	migration.Migrate()
 	// utils.LoadInitalData()
-	log.Fatal(http.ListenAndServe(":80", handler))
+	log.Fatal(http.ListenAndServeTLS(":8080", "server.crt", "server.key", handler))
 }
