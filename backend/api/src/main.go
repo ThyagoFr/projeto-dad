@@ -7,18 +7,8 @@ import (
 	"ufc.com/dad/src/controller"
 	"ufc.com/dad/src/migration"
 
-	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
-
-func init() {
-
-	if err := godotenv.Load(); err != nil {
-		log.Println(err)
-		log.Println("No .env file found")
-	}
-
-}
 
 func main() {
 
@@ -26,8 +16,8 @@ func main() {
 	c := cors.AllowAll()
 
 	handler := c.Handler(mux)
-	log.Println("Server running on 8080 port ... ")
+	log.Println("Server running on 80 port ... ")
 	migration.Migrate()
 	// utils.LoadInitalData()
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	log.Fatal(http.ListenAndServe(":80", handler))
 }
