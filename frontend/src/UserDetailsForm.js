@@ -113,7 +113,7 @@ function UserDetailsForm({ handleCloseDrawer, showDrawer, onSubmit, userDetails 
           "Content-Type": "multipart/form-data",
         }
       }).then(r => {
-        toast.success("Dados atualizados com sucesso!")
+        //toast.success("Dados atualizados com sucesso!")
         const newreader =  { email: myUserDetails.email, age: myUserDetails.age, username: username, id: r.data.ID, photo: r.data.Photo}
         setLoadingForm(false)
         form.resetFields()

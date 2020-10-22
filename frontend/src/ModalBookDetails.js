@@ -48,6 +48,8 @@ function ModalBookDetails({ book, showModal, onOk, reloadBook, setShowUser }) {
   function getReviews() {
     if (api.loggedIn()) {
       api.get(`${SERVER_URL}/api/v1/books/${bookId}/comments`, { headers: headers() }).then(r => {
+        console.log(bookId)
+        console.log(r)
         const readers = r.data.map(u => ({
           reader: u.User, email: u.Email, comment: u.Comment, rate: u.Rate, picture: u.UserPhoto || "https://dad-react-static.s3.us-east-2.amazonaws.com/icon.png"
         }))

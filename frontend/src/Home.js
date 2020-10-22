@@ -49,7 +49,7 @@ function Home() {
             Meus Dados
           </Menu.Item>
           <Menu.Item onClick={() => {
-              toast.success("Logout realizado!")
+              //toast.success("Logout realizado!")
               setShowUser(false); 
               api.logout()}} key="2" icon={<LogoutOutlined />}>
             Sair
@@ -121,7 +121,7 @@ function Home() {
                 </Content>
 
             </Layout>
-            <Footer style={{ textAlign: 'center' }}>Footer</Footer>
+            <Footer style={{ textAlign: 'center' }}>GoodBooks DAD - 2020</Footer>
             <ModalBookDetails setShowUser={setShowUser} showModal={showModal} book={book} reloadBook={reloadBook} onOk={onOkModal} />
             <UserDetailsForm onSubmit={(u) => {api.setUser(u)}} handleCloseDrawer={() => setShowUserDetails(false)} showDrawer={showUserDetails} userDetails={api.userJSON()} />
             <ToastContainer />

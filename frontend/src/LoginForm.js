@@ -36,7 +36,7 @@ function LoginForm({ handleCloseDrawer, showDrawer, onSubmit }) {
       const userDetails = values
 
       api.post(`/login`, { email: userDetails.email, password: userDetails.password }).then(response => {
-        toast.success("Login efetuado com successo!")
+        //toast.success("Login efetuado com successo!")
         console.log(response)
         const user = response.data.reader;
         api.login({ access_token: response.data.token, 
@@ -136,7 +136,7 @@ function LoginForm({ handleCloseDrawer, showDrawer, onSubmit }) {
           "Content-Type": "multipart/form-data"
         }
       }).then(r => {
-        toast.success("Registro Criado! Por favor, faça login para continuar.")
+        //toast.success("Registro Criado! Por favor, faça login para continuar.")
         setLoadingForm(false)
         setTab("1")
         setShowUsuarioInvalido(false)
