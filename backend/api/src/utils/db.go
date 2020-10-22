@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var connection *gorm.DB
+
 // Database - Database struct
 type database struct {
 	dialect  string
@@ -15,6 +17,29 @@ type database struct {
 	user     string
 	dbname   string
 	password string
+}
+
+func init() {
+
+	databaseParams := database{}
+	databaseParams.new()
+	stringConnection := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",
+		databaseParams.host, databaseParams.port,
+		databaseParams.user, databaseParams.dbname,
+		databaseParams.password)
+	connection, _ = gorm.Open(
+		postgres.New(postgres.Config{
+			DSN:                  stringConnection,
+			PreferSimpleProtocol: true,
+		}), &gorm.Config{})
+
+}
+
+// NewConnection -- Cria uma nova conexão com o banco
+func NewConnection() (*gorm.DB, error) {
+
+	return connection, nil
+
 }
 
 // New -- Cria uma nova Struct com os valores de configuração
@@ -26,20 +51,4 @@ func (d *database) new() {
 	d.password = "392035ab"
 	d.dbname = "appdad"
 
-}
-
-// NewConnection -- Cria uma nova conexão com o banco
-func NewConnection() (*gorm.DB, error) {
-	databaseParams := database{}
-	databaseParams.new()
-	stringConnection := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",
-		databaseParams.host, databaseParams.port,
-		databaseParams.user, databaseParams.dbname,
-		databaseParams.password)
-	db, err := gorm.Open(
-		postgres.New(postgres.Config{
-			DSN:                  stringConnection,
-			PreferSimpleProtocol: true,
-		}), &gorm.Config{})
-	return db, err
 }
