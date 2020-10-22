@@ -10,6 +10,7 @@ import MyBookList from "./MyBookList";
 import UserDetailsForm from "./UserDetailsForm";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CLIENT_VERSION } from "./config";
 
 function Home() {
     console.log(api.userPhoto())
@@ -121,7 +122,7 @@ function Home() {
                 </Content>
 
             </Layout>
-            <Footer style={{ textAlign: 'center' }}>GoodBooks DAD - 2020</Footer>
+                    <Footer style={{ textAlign: 'center' }}>GoodBooks DAD - 2020 - v${CLIENT_VERSION}</Footer>
             <ModalBookDetails setShowUser={setShowUser} showModal={showModal} book={book} reloadBook={reloadBook} onOk={onOkModal} />
             <UserDetailsForm onSubmit={(u) => {api.setUser(u)}} handleCloseDrawer={() => setShowUserDetails(false)} showDrawer={showUserDetails} userDetails={api.userJSON()} />
             <ToastContainer />
