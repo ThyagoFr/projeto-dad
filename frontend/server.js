@@ -11,4 +11,4 @@ app.use(compression());
 // Serve the static files from the build folder
 app.use(express.static( __dirname + "/build"));
 // Listen to port 3000
-app.listen(process.env.PORT || 3000);
+app.listen(3000);
